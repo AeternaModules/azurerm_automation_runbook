@@ -11,6 +11,7 @@ resource "azurerm_automation_runbook" "automation_runbooks" {
   content                  = each.value.content
   description              = each.value.description
   log_activity_trace_level = each.value.log_activity_trace_level
+  runtime_environment_name = each.value.runtime_environment_name
   tags                     = each.value.tags
 
   dynamic "draft" {

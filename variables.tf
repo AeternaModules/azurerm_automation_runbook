@@ -13,6 +13,7 @@ Optional:
     - content
     - description
     - log_activity_trace_level
+    - runtime_environment_name
     - tags
     - draft (block):
         - content_link (optional, block):
@@ -52,6 +53,7 @@ EOT
     content                  = optional(string)
     description              = optional(string)
     log_activity_trace_level = optional(number)
+    runtime_environment_name = optional(string)
     tags                     = optional(map(string))
     draft = optional(object({
       content_link = optional(object({
@@ -67,7 +69,7 @@ EOT
       parameters = optional(object({
         default_value = optional(string)
         key           = string
-        mandatory     = optional(bool, false)
+        mandatory     = optional(bool) # Default: false
         position      = optional(number)
         type          = string
       }))
