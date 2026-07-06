@@ -88,5 +88,113 @@ EOT
       version = optional(string)
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.content == null || (length(v.content) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.draft == null || (v.draft.output_types == null || (length(v.draft.output_types) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.draft == null || (v.draft.parameters == null || (length(v.draft.parameters.key) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.draft == null || (v.draft.parameters == null || (length(v.draft.parameters.type) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.draft == null || (v.draft.parameters == null || (v.draft.parameters.position == null || (v.draft.parameters.position >= 0)))
+      )
+    ])
+    error_message = "must be at least 0"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.draft == null || (v.draft.parameters == null || (v.draft.parameters.default_value == null || (length(v.draft.parameters.default_value) > 0)))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.log_activity_trace_level == null || (v.log_activity_trace_level >= 0)
+      )
+    ])
+    error_message = "must be at least 0"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.automation_runbooks : (
+        v.runtime_environment_name == null || (length(v.runtime_environment_name) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # --- Unconfirmed validation candidates, derived from azurerm_automation_runbook's provider source ---
+  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
+  # or a path that crosses a list-typed block (needs its own for_each wrapping).
+  # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: name
+  #   source:    validate.RunbookName: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: automation_account_name
+  #   source:    validate.AutomationAccount: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: location
+  #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: resource_group_name
+  #   condition: length(value) <= 90
+  #   message:   [from resourcegroups.ValidateName: invalid when len(value) > 90]
+  #   source:    [from resourcegroups.ValidateName: invalid when len(value) > 90]
+  # path: resource_group_name
+  #   condition: !endswith(value, ".")
+  #   message:   [from resourcegroups.ValidateName: must not end with "."]
+  #   source:    [from resourcegroups.ValidateName: must not end with "."]
+  # path: resource_group_name
+  #   condition: length(value) != 0
+  #   message:   [from resourcegroups.ValidateName: invalid when len(value) == 0]
+  #   source:    [from resourcegroups.ValidateName: invalid when len(value) == 0]
+  # path: resource_group_name
+  #   source:    [from resourcegroups.ValidateName] !matched
+  # path: runbook_type
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: job_schedule.schedule_name
+  #   source:    validate.ScheduleName: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: job_schedule.parameters
+  #   source:    [from validate.ParameterNames] k != strings.ToLower(k)
+  # path: tags
+  #   condition: length(value) <= 50
+  #   message:   [from tags.Validate: invalid when len(value) > 50]
+  #   source:    [from tags.Validate: invalid when len(value) > 50]
+  # path: tags
+  #   condition: length(value) <= 512
+  #   message:   [from tags.Validate: invalid when len(value) > 512]
+  #   source:    [from tags.Validate: invalid when len(value) > 512]
+  # path: tags
+  #   source:    [from tags.Validate] err != nil
+  # path: tags
+  #   condition: length(value) <= 256
+  #   message:   [from tags.Validate: invalid when len(value) > 256]
+  #   source:    [from tags.Validate: invalid when len(value) > 256]
 }
 
