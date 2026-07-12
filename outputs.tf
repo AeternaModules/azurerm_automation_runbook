@@ -1,3 +1,7 @@
+output "automation_runbooks_id" {
+  description = "Map of id values across all automation_runbooks, keyed the same as var.automation_runbooks"
+  value       = { for k, v in azurerm_automation_runbook.automation_runbooks : k => v.id }
+}
 output "automation_runbooks_automation_account_name" {
   description = "Map of automation_account_name values across all automation_runbooks, keyed the same as var.automation_runbooks"
   value       = { for k, v in azurerm_automation_runbook.automation_runbooks : k => v.automation_account_name }
