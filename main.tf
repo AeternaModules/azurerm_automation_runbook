@@ -34,7 +34,7 @@ resource "azurerm_automation_runbook" "automation_runbooks" {
       edit_mode_enabled = draft.value.edit_mode_enabled
       output_types      = draft.value.output_types
       dynamic "parameters" {
-        for_each = draft.value.parameters != null ? [draft.value.parameters] : []
+        for_each = draft.value.parameters != null ? draft.value.parameters : []
         content {
           default_value = parameters.value.default_value
           key           = parameters.value.key
@@ -47,7 +47,7 @@ resource "azurerm_automation_runbook" "automation_runbooks" {
   }
 
   dynamic "job_schedule" {
-    for_each = each.value.job_schedule != null ? [each.value.job_schedule] : []
+    for_each = each.value.job_schedule != null ? each.value.job_schedule : []
     content {
       parameters    = job_schedule.value.parameters
       run_on        = job_schedule.value.run_on

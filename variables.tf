@@ -66,19 +66,19 @@ EOT
       }))
       edit_mode_enabled = optional(bool)
       output_types      = optional(list(string))
-      parameters = optional(object({
+      parameters = optional(list(object({
         default_value = optional(string)
         key           = string
         mandatory     = optional(bool) # Default: false
         position      = optional(number)
         type          = string
-      }))
+      })))
     }))
-    job_schedule = optional(object({
+    job_schedule = optional(list(object({
       parameters    = optional(map(string))
       run_on        = optional(string)
       schedule_name = string
-    }))
+    })))
     publish_content_link = optional(object({
       hash = optional(object({
         algorithm = string
@@ -88,70 +88,6 @@ EOT
       version = optional(string)
     }))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.content == null || (length(v.content) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.draft == null || (v.draft.output_types == null || (length(v.draft.output_types) > 0))
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.draft == null || (v.draft.parameters == null || (length(v.draft.parameters.key) > 0))
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.draft == null || (v.draft.parameters == null || (length(v.draft.parameters.type) > 0))
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.draft == null || (v.draft.parameters == null || (v.draft.parameters.position == null || (v.draft.parameters.position >= 0)))
-      )
-    ])
-    error_message = "must be at least 0"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.draft == null || (v.draft.parameters == null || (v.draft.parameters.default_value == null || (length(v.draft.parameters.default_value) > 0)))
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.log_activity_trace_level == null || (v.log_activity_trace_level >= 0)
-      )
-    ])
-    error_message = "must be at least 0"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_runbooks : (
-        v.runtime_environment_name == null || (length(v.runtime_environment_name) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_automation_runbook's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -178,10 +114,34 @@ EOT
   #   source:    [from resourcegroups.ValidateName] !matched
   # path: runbook_type
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: content
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: job_schedule.schedule_name
   #   source:    validate.ScheduleName: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
   # path: job_schedule.parameters
   #   source:    [from validate.ParameterNames] k != strings.ToLower(k)
+  # path: draft.output_types[*]
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: draft.parameters.key
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: draft.parameters.type
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: draft.parameters.position
+  #   condition: value >= 0
+  #   message:   must be at least 0
+  # path: draft.parameters.default_value
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: log_activity_trace_level
+  #   condition: value >= 0
+  #   message:   must be at least 0
+  # path: runtime_environment_name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: tags
   #   condition: length(value) <= 50
   #   message:   [from tags.Validate: invalid when len(value) > 50]
