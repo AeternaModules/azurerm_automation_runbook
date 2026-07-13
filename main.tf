@@ -49,9 +49,10 @@ resource "azurerm_automation_runbook" "automation_runbooks" {
   dynamic "job_schedule" {
     for_each = each.value.job_schedule != null ? each.value.job_schedule : []
     content {
-      parameters    = job_schedule.value.parameters
-      run_on        = job_schedule.value.run_on
-      schedule_name = job_schedule.value.schedule_name
+      job_schedule_id = job_schedule.value.job_schedule_id
+      parameters      = job_schedule.value.parameters
+      run_on          = job_schedule.value.run_on
+      schedule_name   = job_schedule.value.schedule_name
     }
   }
 

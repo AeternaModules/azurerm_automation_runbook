@@ -31,9 +31,10 @@ Optional:
             - position (optional)
             - type (required)
     - job_schedule (block):
+        - job_schedule_id (optional)
         - parameters (optional)
         - run_on (optional)
-        - schedule_name (required)
+        - schedule_name (optional)
     - publish_content_link (block):
         - hash (optional, block):
             - algorithm (required)
@@ -69,15 +70,16 @@ EOT
       parameters = optional(list(object({
         default_value = optional(string)
         key           = string
-        mandatory     = optional(bool) # Default: false
+        mandatory     = optional(bool)
         position      = optional(number)
         type          = string
       })))
     }))
     job_schedule = optional(list(object({
-      parameters    = optional(map(string))
-      run_on        = optional(string)
-      schedule_name = string
+      job_schedule_id = optional(string)
+      parameters      = optional(map(string))
+      run_on          = optional(string)
+      schedule_name   = optional(string)
     })))
     publish_content_link = optional(object({
       hash = optional(object({
