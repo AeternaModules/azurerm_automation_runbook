@@ -16,7 +16,7 @@ output "automation_runbooks_description" {
 }
 output "automation_runbooks_draft" {
   description = "Map of draft values across all automation_runbooks, keyed the same as var.automation_runbooks"
-  value       = { for k, v in azurerm_automation_runbook.automation_runbooks : k => v.draft if v.draft != null && length(v.draft) > 0 }
+  value       = { for k, v in azurerm_automation_runbook.automation_runbooks : k => one(v.draft) if v.draft != null && length(v.draft) > 0 }
 }
 output "automation_runbooks_job_schedule" {
   description = "Map of job_schedule values across all automation_runbooks, keyed the same as var.automation_runbooks"
@@ -44,7 +44,7 @@ output "automation_runbooks_name" {
 }
 output "automation_runbooks_publish_content_link" {
   description = "Map of publish_content_link values across all automation_runbooks, keyed the same as var.automation_runbooks"
-  value       = { for k, v in azurerm_automation_runbook.automation_runbooks : k => v.publish_content_link if v.publish_content_link != null && length(v.publish_content_link) > 0 }
+  value       = { for k, v in azurerm_automation_runbook.automation_runbooks : k => one(v.publish_content_link) if v.publish_content_link != null && length(v.publish_content_link) > 0 }
 }
 output "automation_runbooks_resource_group_name" {
   description = "Map of resource_group_name values across all automation_runbooks, keyed the same as var.automation_runbooks"
